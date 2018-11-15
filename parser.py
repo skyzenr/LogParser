@@ -13,17 +13,20 @@ import csv
 import pandas as pd
 from urllib.parse import urlparse, parse_qs
 
-
 extension = ".csv"
 
 functions = [
     'getAdv',
     'getVideoData',
     'getVideoDataSearch',
+    'getVODAccessToken.do',
+    'getVideoLogo',
+    'getPlaylistVideoData',
+    'getPlaylistInfo',
 ]
 
 # APIRegex -> Eg. getAdv?zone=news_diretta&cliente=0&_=1540695247997
-APIRegex = r'.* - - \[\d+\/\w+/\d+:\d+:\d+:\d+ \+\d+\] "GET \/be\/([^\?]+\?[^ ]*) '
+APIRegex = r'.* - - \[\d+\/\w+/\d+:\d+:\d+:\d+ \+\d+\] "GET (?:\/be\/|\/SkyItVideoportalUtility\/)([^\?]+\?[^ ]*) '
 # FunctionRegex -> Eg. getAdv
 FunctionRegex = r'([^\?]*)'
 # ParametersRegex -> Eg. zone=news_diretta&cliente=0&_=1540695247997
@@ -38,9 +41,6 @@ def write_entry(file_path, function, parameters):
     if parameters:
         with open(file_path, "a") as f:
             f.write(function+","+parameters+"\n")
-
-# def close_file(f):
-#     f.close()
 
 def log_reader(logfile, outputFiles):
     global functions
@@ -89,8 +89,6 @@ def main():
     # A global file with all API calls belonging to functions (without token as parameter)
     outputFiles["global.notoken.functions"] = open_file(log_file+"."+"global.notoken.functions"+extension)
     log_reader(log_file, outputFiles)
-    # for f in outputFiles:
-    #     close_file(outputFiles[f])
 
 if __name__ == '__main__':
     main()
